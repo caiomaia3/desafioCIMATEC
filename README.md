@@ -81,7 +81,7 @@ onde os K's são os ganhos linear e angular, selecionados de acordo com a priori
 
 ### Simulações
 
-Utilizando [esta ideia de controle](## Controle Proporcional)  em conjunto com o [planejamento de trajetória](## Planejamento de Trajetória) foram realizadas simulações em [MATLAB ](scr/simulation/MATLAB)e [Python]. Os resultados destas podem ser vistas nas seguinte imagens. Os códigos relacionados estão no repositório de [simulações](scr/simulation).
+Utilizando [esta ideia de controle](## Controle Proporcional)  em conjunto com o [planejamento de trajetória](## Planejamento de Trajetória) foram realizadas simulações em [MATLAB ](scr/simulation/MATLAB)e [Python](scr/simulation/Python). Os resultados destas podem ser vistas nas seguinte imagens. Os códigos relacionados estão no repositório de [simulações](scr/simulation).
 
 #### MATLAB
 
@@ -91,7 +91,7 @@ Utilizando [esta ideia de controle](## Controle Proporcional)  em conjunto com o
 
 ![image](img/pythonSimulation.png)
 
-Embora o planejador tenha seguido a trajetória, na prática os pontos ficaram muito próximo das paredes, situação que dificultou o trajeto. Deste modo,  restrições quanto a proximidade de obstáculos devem ser inseridas no A*. Feito pequenos ajuste é esperado que a navegação leve ao resultado esperado.
+Embora o planejador tenha seguido a trajetória, na prática os pontos ficaram muito próximo das paredes, situação que dificultou o trajeto. Deste modo,  restrições quanto a proximidade de obstáculos devem ser inseridas no A*. Feito pequenos ajuste é esperado que a navegação leve ao objetivo.
 
 Como alternativa foi definido uma trajetória qualquer que levasse o robô ao seu objetivo, representada em uma sequencias de pares ordenados em um arquivo .csv.
 
@@ -103,11 +103,11 @@ O desvio de obstáculo utilizou a ideia de campos magnéticos, onde a interaçã
 
 ![image](img/produtoVetorial.png)
 
-A torção virtual que será utilizada no controle é resultado do produto vetorial entre um versor com origem no centro de massa e outro em função do ângulo de montagem do sensor e da distância entre o robô e o obstáculo. Esta operação acontece apenas para um raio de alcance limitado e possui a seguinte equação
+A torção virtual que será utilizada no controle é resultado do produto vetorial entre um versor com origem no centro de massa do robô e outro em função do ângulo de montagem do sensor e da distância entre o robô e o obstáculo. Esta operação acontece apenas para um raio de alcance limitado e possui a seguinte equação
 
 ![imagem](img/rotationalEquation.png)
 
-onde T é um vetor de torção e o módulo do vetor do sensor é calculado seguindo a ideia de campo potencial. O código desta estratégia foi implementado da seguinte função:
+onde T é um vetor de torção e o módulo do vetor do sensor é calculado seguindo a ideia de campo potencial. O código desta estratégia foi implementado na seguinte função:
 
 
 
@@ -121,7 +121,7 @@ def calculateAvoidanceRotation(robotDirection,sensorList,numberList,radius):
             return rot
 ~~~
 
-onde o controlador percorre uma lista de sensores disponíveis, calculando e somando dos esforços de decorrentes dos produtos vetoriais. O esforço de controle é calculado utilizando a seguinte função:
+onde o controlador percorre uma lista de sensores disponíveis, calculando e somando os esforços decorrentes dos produtos vetoriais. Este cálculo de esforço de controle alcançado ao utilizar a seguinte função:
 
 ~~~python
 def calculateControlEffort(pontentialVector,robotDirection):
@@ -129,13 +129,13 @@ def calculateControlEffort(pontentialVector,robotDirection):
     return rotation[-1]
 ~~~
 
-que pega o valor escalar decorrente do produto vetorial entre os vetores. Com a soma de todas as contribuições dos sensores o esforço de controle gerado é aplicado da mesma forma que o erro angular, gerando uma tendencial de mudança de direção no robô, de modo que este se afaste dos objetos no raio de atuação dos sensores.
+Essa retorna o valor escalar decorrente do produto vetorial entre os vetores. Com a soma de todas as contribuições dos sensores o esforço de controle gerado é aplicado da mesma forma que o erro angular e gera uma tendencial de mudança de direção no robô. Deste modo o robô se afasta dos objetos dentro do raio definido para a atuação dos sensores.
 
 
 
 #### Apresentação do Código de Controle
 
-A primeira parte do algoritmo de controle consiste no carregamento da trajetória previamente definida.
+A primeira parte do algoritmo consiste no carregamento da trajetória previamente definida, vista no código abaixo.
 
 ~~~Python
 #Load trajectory
@@ -154,9 +154,9 @@ trajectoryList.reverse() #Make a stack
 del(newList)
 ~~~
 
- Em seguida é inicializado o objeto da classe Robot() e demais sensores. Lembrando que foram utilizados 4 sensores ultrassônicos, uma IMU e um GPS.
+ Em seguida é instanciado o objeto da classe Robot() e demais sensores. Vale ressaltar que foram utilizados 4 sensores ultrassônicos, uma IMU e um GPS.
 
-Uma parte importante do código é a sintonia do controlador e restrições associados ao comportamento do mesmo. Antes do loop de controle foi assumido os ganhos de acordo com o código apresentado. 
+Uma parte importante do código é a sintonia do controlador e restrições associados. Antes do loop de controle foi assumido os ganhos de acordo com o código apresentado, que decorrente de algumas tentativas. 
 
 ~~~Python
 #The Control Loop
@@ -171,9 +171,9 @@ interruptionCounter = 0
 radius = 400
 ~~~
 
-A variável interruptionCounter é utilizada com a ideia de histerese ou inércia e faz com que haja um prolongamento do algoritmo de desvio de obstáculo. Deste modo, este algoritmo ganha prioridade durante um tempo, já que sistema precisa de um tempo para mudar a sua dinâmica.
+A variável interruptionCounter é utilizada com a ideia de histerese ou inércia e faz com que haja um prolongamento do algoritmo de desvio de obstáculo. Este algoritmo ganha prioridade durante um período, já que sistema precisa de um tempo para mudar a sua dinâmica.
 
-O ciclo do loop consistem em sensoriamento, cálculo de referências, cálculo do esforço de controle e atuação. Na primeira etapa os sensores existente são utilizados para realizar as medições necessárias.
+O ciclo do loop consiste em sensoriamento, cálculo de referências, cálculo do esforço de controle e atuação. Na primeira etapa os sensores existentes são utilizados para realizar as medições necessárias.
 
 ~~~python
    # #Sensoring
@@ -202,7 +202,7 @@ Como o sistema muda no tempo é necessário a atualização de referências, o q
         positionGain = 0
 ~~~
 
-Depois são calculados, seguindo as estratégias de realimentação proporcional e de campos magnéticos, os esforços de controle.  É aplicada saturação do sinal de entrada de velocidade, no intuito de deixar o controle menos agressivo.
+Depois são calculados, seguindo as estratégias de realimentação proporcional e de campos magnéticos, os esforços de controle.  É aplicada saturação do sinal de entrada de velocidade com intuito de deixar o controle menos agressivo.
 
 ~~~python
     #Calculating Control Effort
@@ -244,4 +244,4 @@ Finalmente as entrada de velocidade são aplicadas ao sistema.
 
 ## Considerações finais
 
-A estratégia utilizada para cumprir este desafio foi aplicar realimentação de estados proporcional juntamente com a ideia de interação entre campos magnéticos, para fazer o o robô seguir uma trajetória predefinida e evitar, em caráter local, obstáculos que possam atrapalhar a missão. Foram utilizados, além de 4 sensores de distância presentes no robô, mais sensores para posicionamento. Como resultado, como pode ser reproduzido no código presente, houve a conclusão da tarefa em algo próximo de 30 segundos.
+A estratégia utilizada para cumprir este desafio foi aplicar realimentação de estados proporcional juntamente com a ideia de interação entre campos magnéticos para fazer o robô seguir uma trajetória predefinida. Ainda foi requerido evitar, em caráter local, obstáculos que possam atrapalhar a missão. Foram utilizados, além de 4 sensores de distância presentes no robô, sensores para posicionamento. Como resultado, como pode ser reproduzido no código presente, houve a conclusão da tarefa em algo próximo de 30 segundos.
