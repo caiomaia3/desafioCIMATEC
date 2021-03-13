@@ -13,22 +13,13 @@ Deste modo, o trabalho com robôs autônomos consiste em resolver os problemas d
 Neste desafio foi escolhido um robô de tração diferencial, que se deslocará em um ambiente plano, de superfície lisa e com alguns obstáculos. Robôs com rodas são estáveis, de baixa complexidade topológica e de controle. Contudo, apesar da vantagem que um modelo matemático possibilita, este não pôde ser facilmente obtido e mesmo o emprego de técnicas de identificação levariam um tempo considerável.
 Como o modelo completo era inviável, foi usada a estratégia de utilizar apenas o modelo cinemático e considerar que a estabilidade intrínseca e a saturação de entrada evitariam instabilidade em malha fechada. Deste modo, foi usado o seguinte modelo
 
+![image](img/modeloCinematico.png)
 
-
-
+que pode ser obtido por meio das restrições não-holonômicas e da matriz de transformação. A matriz em questão associa as referências inercial e de centro de massa do robô, de modo que os estados possam ser mudados de uma referência para outra.. Os estados xr,yr e teta, são as posições do robô com relação à referência inercial e o ângulo entre o vetor direção do robô e o eixo das abscissas, respectivamente. A entradas derivadas de phi_R e \phi_L são as velocidades angulares das rodas direita e esquerda, respectivamente[[2]](http://dx.doi.org/10.4172/2168-9695.1000107). Este modelo corresponde a imagem
 
 ![image](img/kinematicModel.png)
 
-Colocar a equação em forma de imagem. O navegador não compilou a matriz.
-$$
-\dot{x}_a^r \dot{y}_a^r \dot{\theta} = \frac{R}{2} \dot{\phi}_R \dot{\phi}_L,
-$$
-
-que pode ser obtido por meio das restrições não-holonômicas e da matriz de transformação, obtem-se o modelo cinemático. A matriz em questão associa as referências inercial e de centro de massa do robô. Os estados $$x_a^r$$, $$y_a^r$$ e $$\theta$$ são as posições do robô com relação à referência inercial e o ângulo entre o vetor direção do robô e o eixo das abscissas. A entradas $$ \dot{\phi}_R$$ e $$ \dot{\phi}_L$$ são as velocidades angulares das rodas direita e esquerda, respectivamente[[2]](http://dx.doi.org/10.4172/2168-9695.1000107). Este modelo corresponde a imagem
-
-colocar imagem do rodo
-
-Como podemos observar no modelo, entradas de mesmo valor absoluto e sinais distintos provocam variação apenas em teta. Caso as entradas tenham mesmo valor, o robô se desloca em linha reta. Composições destes dois padrões provocam trajetórias curvas. Pode-se utlizar este comportamento para sintonizar uma realimentação proporcional, que pode ser testada previamente por meio de simulação. O repositório ??? contem códigos em MATLAB e também de simulações que utilizam o este modelo dinâmico.
+Como podemos observar no modelo, entradas de mesmo valor absoluto e sinais distintos provocam variação apenas em teta. Caso as entradas tenham mesmo valor, o robô se desloca em linha reta e composições destes dois padrões provocam trajetórias curvas. Pode-se utilizar este comportamento para elaborar uma realimentação proporcional, que pode ser testada previamente por meio de simulação. O repositório  contem códigos em [MATLAB ](scr/simulation/MATLAB)e também de simulações que utilizam o este modelo dinâmico.
 
 ## Etapas de solução do problema
 
@@ -41,7 +32,7 @@ O roteiro de projeto foi:
 
 
 ## Planejamento de Trajetória
-A etapa de planejamento de trajetória é importante devido à potencial redução tempo para execução da tarefa, bem como à diminuição de capital investido no robô móvel. Em um planejamento global, aquele que possui conhecimento de todo ambiente, os seguintes passo devem ser genericamente seguidos: modelagem do ambiente, definição de critério de otimização, seleção do algoritmo de busca. A modelagem é realizada ao se basear em um dado mapa, que é transformado em informação a ser armazenada de maneira conveniente. Quanto aos critérios, esses podem se basear em métricas relacionadas da menor distância, gasto de energia, segurança, etc. Já a busca consiste em achar o caminho entre pontos, que deve respeitar aos critérios de otimização e evitar colisões. Vários estratégias podem ser encontradas na literatura, com suas vantagens e deficiências. Contudo, aqui será a adotado método heurístico A* com modelo baseado em imagem segmentada por uma malhada de quadrados iguais. A métrica utilizada será a distância mínima. Mesmo com o aumento de complexidade com a variação de ordem do problema, este estratégia é atrativa devido a sua simplicidade e ao reduzido tamanho do ambiente de busca do desafio.[[3]](https://doi.org/10.3390/sym10100450) Com o algoritmo A* em mapa do ambiente foi conseguido resultado da seguinte imagem. Onde os pixels em preto representam obstáculos e paredes  alinha em vermelho a trajetória encontrada.
+A etapa de planejamento de trajetória é importante devido à potencial redução de tempo na execução da tarefa, bem como na diminuição de capital investido no robô móvel. Em um planejamento global, aquele que possui conhecimento de todo ambiente, os seguintes passos devem ser geralmente seguidos: modelagem do ambiente, definição de critério de otimização, seleção do algoritmo de busca. A modelagem pode ser realizada ao se basear em mapa, que é transformado em informação a ser armazenada e posteriormente utilizada. Quanto aos critérios, esses podem se basear em métricas relacionadas à menor distância, gasto de energia, segurança, etc. Já a busca consiste em achar o caminho entre pontos, que deve respeitar aos critérios de otimização e evitar colisões. Vários estratégias podem ser encontradas na literatura, com suas vantagens e deficiências, contudo, aqui será adotado o método heurístico A* , com modelo baseado em imagem segmentada em malha de quadrados e métrica utilizada será a distância mínima. Mesmo com o aumento de complexidade com a variação da ordem do problema, esta estratégia é atrativa devido à sua simplicidade e ao reduzido tamanho do espaço de busca.[[3]](https://doi.org/10.3390/sym10100450) Com o algoritmo A* em mapa do ambiente foi conseguido o resultado na imagem seguinte, onde os pixels em preto representam obstáculos e paredes e a linha em vermelho a trajetória ótima encontrada. Esta imagem pode ser colocada na escala do problema e resultar em uma sequência de pares ordenados que definem a trajetória a ser seguida.
 
 
 
@@ -52,27 +43,27 @@ A etapa de planejamento de trajetória é importante devido à potencial reduç�
 
 
 ## Atuadores
-Os atuadores utilizados são motores rotativos acoplados ao corpo do robô, que permitem a mudança direção e o deslocamento do mesmo. Felizmente esses motores já possuem um controle PID que está sintonizado de modo que a sua dinâmica de malha fechada possa ser desconsiderada. É assumido, como aproximação, que ao aplicar um sinal de referência para velocidade angular das rodas assumam esta velocidade instantaneamente.
+Os atuadores utilizados são motores rotativos acoplados ao corpo do robô e permitem a mudança de direção e o deslocamento do mesmo. Felizmente esses motores já possuem um controle PID sintonizado de modo que a sua dinâmica de malha fechada possa ser desconsiderada. É assumido, como aproximação, que ao aplicar um sinal de referência para velocidade angular das rodas, essas assumam esse valor instantaneamente.
 
 ## Sensores
-No contexto do desafio os objetivos do sensoriamento são identificar obstáculos e o posicionamento do robô. Para o posicionamento, algumas técnicas foram escolhidas visando a simplicidade e economia na quantidade de dispositivos. A mais simples e econômica delas seria utilizar odometria, já que existem sensores de posição nas rodas do robô e o chão não apresenta rugosidade. Contudo, a incerteza acumulada ao longo do trajeto torna aplicação inviável. Isto pode ter ocorrido devido boa representação da física no simulador, que incluem não linearidades como derrapagem, por exemplo. Outra opção seria a utlização de acelerômetro juntamente com giroscópio e obter os estados de posição e direção por meio de integrações trapezoidais. Neste caso, os erros  numéricos relacionados, tipicos de cenários simulados, são integrados e acumulados ao longo do tempo. Para evitar divergência nos estados alguma técnica de filtragem deveria ser utilizada. Vale ressaltar que técinicas como fusão de sensores e filtragem ótima ajudariam bastante nestes cenário, mas a janela de tempo disponível foi insuficiente.
-Como **solução adotada** foi utilizada uma unidade de medição inercial e trilateração, por meio do GPS. A unidade de medição inercial faz todo o trabalho de medição e fusão de medidas e apresenta as posições angulares do robô. Já trilateração por meio do GPS, embora tenha precisão insuficiente no mundo real e precise ser associada com outros tipos de medida, apresenta boa precisão no simulador.
+No contexto do desafio os objetivos do sensoriamento são identificar obstáculos e o posicionamento do robô. Para o posicionamento algumas técnicas foram escolhidas, onde a simplicidade e economia na quantidade de dispositivos foram o objetivo. A mais simples e econômica dessas técnicas seria utilizar odometria, já que existem sensores de posição nas rodas do robô e o chão não apresenta rugosidade. Contudo, a incerteza acumulada ao longo do trajeto torna aplicação inviável. Isto pode ter ocorrido devido boa representação da física no simulador, que incluem não linearidades como derrapagem. Outra opção seria a utilização de acelerômetro juntamente com giroscópio e obter os estados de posição e direção por meio de integrações trapezoidais. Neste caso os erros  numéricos relacionados, típicos de cenários simulados, são integrados e acumulados ao longo do tempo. Para evitar divergência nos estados, alguma técnica de filtragem deveria ser utilizada. Vale ressaltar que técnicas como fusão de sensores e filtragem ótima ajudariam bastante nestes cenário, mas a janela de tempo disponível foi insuficiente.
+A **solução adotada** foi a utilização de uma unidade de medição inercial e trilateração por meio do GPS. A unidade de medição inercial faz todo o trabalho de medição e fusão de medidas e apresenta as posições angulares do robô. Já trilateração por meio do GPS, embora tenha precisão insuficiente no mundo real e precise ser associada com outros tipos de medida, apresenta boa precisão no simulador.
 
 ## Controle Proporcional
 
-Como dito na [seção](## Robôs de Tração Diferencial) anterior, a influência dos sinais de entrada, velocidades das rodas, no modelo cinemático podem ser utilizado para sintetizar um controle. Contudo, inicialmente é necessário quantificar o quanto o robô se diferencia de uma dada referência. Seja os estados do robô dada por
+Como dito na [seção](## Robôs de Tração Diferencial) anterior, a influência dos sinais de entrada, velocidades das rodas, no modelo cinemático podem ser utilizada para sintetizar um controle. Contudo, é necessário quantificar o quanto o robô se diferencia de uma dada referência. Seja os estados do robô dada por
 
 ![imagem](img/estados.png)
 
-o erro entre a posição atual e o objetivo pode ser descrito por
+o erro entre a posição atual e o objetivo descrito por
 
 ![image](img/erroPosicao.png)
 
-onde minimizar esta diferença consiste em atingir o ponto desejado. Percebe-se que o vetor de erro pode ser representado em coordenadas polares e que o objetivo pode ser atingido quando o módulo r tende a zero e teta tende a sigma. Portanto, pode-se reformular o erro da seguinte forma
+a minimização desta diferença consiste em atingir o ponto desejado. Percebe-se que o vetor de erro pode ser representado em coordenadas polares e que o objetivo pode ser atingido quando o módulo r tende a zero e teta tende a sigma. Portanto, pode-se reformular o erro da seguinte forma
 
 ![image](img/erroReform.png)
 
-onde minimizar os componentes de e significa atingir a posição de referência. Entretanto, é necessário elaborar uma forma de interferir no sistema por meio suas entradas. Considere que o robô está direcionado ao seu objetivo e basta que este se desloque em linha reta. O sinal de controle para que ele cumpra esta tarefa pode ser
+onde minimizar os componentes de "e" significa atingir a posição de referência. Entretanto, é necessário elaborar uma forma de interferir no sistema por meio suas entradas. Considere que o robô está direcionado ao seu objetivo e basta que este se desloque em linha reta. O sinal de controle para que ele cumpra esta tarefa pode ser
 
 ![image](img/esforcoR.png)
 
@@ -88,11 +79,9 @@ onde os K's são os ganhos linear e angular, selecionados de acordo com a priori
 
 ![image](img/diagramaBlocos.png)
 
-
-
 ### Simulações
 
-Utilizando [esta ideia de controle](## Controle Proporcional)  em conjunto com o [planejamento de trajetória](## Planejamento de Trajetória) foram realizadas simulações em MATLAB e Python. Os resultados destas podem ser vistas nas seguinte imagens. Os códigos relacionados estão no repositório de [simulações](scr/simulation).
+Utilizando [esta ideia de controle](## Controle Proporcional)  em conjunto com o [planejamento de trajetória](## Planejamento de Trajetória) foram realizadas simulações em [MATLAB ](scr/simulation/MATLAB)e [Python]. Os resultados destas podem ser vistas nas seguinte imagens. Os códigos relacionados estão no repositório de [simulações](scr/simulation).
 
 #### MATLAB
 
