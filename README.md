@@ -4,15 +4,19 @@
 
 ## Robôs Autônomos
 
-Robôs autônomos são sistemas que podem operar em ambientes imprevisíveis e parcialmente desconhecidos, tendo a capacidade de realizar uma navegação ininterrupta e desviar de obstáculos. Os fundamentos da robótica móvel consistem em **locomoção**, **percepção** e **navegação**. O sistema de locomoção do robô está fortemente ligado à tarefa desempenhada e características como: estabilidade, condições do terreno, eficiência, influenciam nas escolhas de projeto. A especialização aliada a capacidade de se deslocar de forma autônoma torna crescente o interesse nestes sistemas para tarefas que podem ser difíceis para humanos. Características como tipos de atuadores e estratégia de deslocamento estão relacionadas a este sistema.
-É bastante importante que robôs móveis sejam capazes de adquirir informação do seu ambiente, seja para identificar objetos próximos ou posicionamento relativo, pois caso esta tarefa não seja realizada de modo eficiente, a estimação de posição pode se tornar um problema. Este é o sistema de percepção e os elemento que possibilitam a detecção de localização, aquisição de dados  e mapeamento, são os sensores.
-Enquanto o sistema de percepção está relacionado interação com ambiente próximo, os sistema de navegação compreende a tarefa de determinar a localização do robô, do seu objetivo e como este será alcançado. Geralmente o trajeto que deve ser seguido pelo robô não uma linha reta e isto faz com que técnicas sejam de planejamento de trajetória sejam utilizadas[[1]](https://doi.org/10.1109/ACCESS.2020.2975643).
+Robôs autônomos são sistemas que podem operar em ambientes imprevisíveis e parcialmente desconhecidos, tendo a capacidade de realizar uma navegação ininterrupta e desviar de obstáculos. Os fundamentos da robótica móvel consistem em **locomoção**, **percepção** e **navegação**. O sistema de locomoção do robô está fortemente ligado à tarefa desempenhada e características como: estabilidade, condições do terreno, eficiência. A especialização aliada a capacidade de se deslocar de forma autônoma torna crescente o interesse nestes sistemas para tarefas que podem ser difíceis para humanos. Está ainda ligado a este sistema as características como tipos de atuadores utilizados e estratégia de deslocamento.
+É importante que robôs móveis sejam capazes de adquirir informação do seu ambiente, seja para identificar objetos próximos ou posicionamento relativo, pois caso esta tarefa não seja realizada, de modo eficiente, a estimação de posição pode se tornar um problema grave. O sistema que está relacionado a esta capacidade é o sistema de percepção e os elemento que possibilitam a detecção de localização, aquisição de dados  e mapeamento, são os sensores. Enquanto o sistema de percepção está relacionado interação com ambiente próximo, os sistemas de navegação compreendem a tarefa de determinar a localização do robô, do seu objetivo e como este será alcançado. Geralmente o trajeto que deve ser seguido pelo robô não é uma linha reta e isto faz com que técnicas de planejamento de trajetória sejam necessárias[[1]](https://doi.org/10.1109/ACCESS.2020.2975643).
 Deste modo, o trabalho com robôs autônomos consiste em resolver os problemas de locomoção, percepção e navegação. Estes problemas consistem, de forma mais concreta, na determinação da geometria, estratégia de deslocamento, formas de sensoriamento, atuadores, estratégias de controle,  e planejamento de trajetória.
 
 
 ## Robôs de Tração Diferencial
-Neste desafio foi escolhido um robô de tração diferencial, que se deslocará em um ambiente plano, de superfície lisa e com alguns obstáculos. Robôs com rodas são estáveis, de baixa complexidade topológica e de controle. Contudo, apesar da vantagem que um modelo matemático possibilita, este não é pôde ser facilmente obtido. Mesmo o emprego de técnicas de identificação levariam um tempo considerável.
-Como o modelo completo era inviável, foi usada a estratégia de usar apenas o modelo cinemático e considerar que a estabilidade intrínseca e saturação de entrada evitasse instabilidade do controle em malha fechada. Deste modo, ao usar o modelo
+Neste desafio foi escolhido um robô de tração diferencial, que se deslocará em um ambiente plano, de superfície lisa e com alguns obstáculos. Robôs com rodas são estáveis, de baixa complexidade topológica e de controle. Contudo, apesar da vantagem que um modelo matemático possibilita, este não pôde ser facilmente obtido e mesmo o emprego de técnicas de identificação levariam um tempo considerável.
+Como o modelo completo era inviável, foi usada a estratégia de utilizar apenas o modelo cinemático e considerar que a estabilidade intrínseca e a saturação de entrada evitariam instabilidade em malha fechada. Deste modo, foi usado o seguinte modelo
+
+
+
+
+
 ![image](img/kinematicModel.png)
 
 Colocar a equação em forma de imagem. O navegador não compilou a matriz.
